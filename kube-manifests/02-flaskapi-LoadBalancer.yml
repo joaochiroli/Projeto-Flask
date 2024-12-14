@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-api
+  labels: 
+    app: myapp1
+spec:
+  type: LoadBalancer 
+  selector:
+    app: myapp1
+  ports: 
+    - port: 80
+      targetPort: 5000
