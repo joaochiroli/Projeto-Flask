@@ -1,10 +1,24 @@
 # Projeto-Flask
 
 ```
-# Configure the Microsoft Azure Provider
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.14" # Certifique-se de ajustar a versão conforme necessário
+    }
+  }
+
+  backend "azurerm" {
+    resource_group_name  = "projeto-flask"
+    storage_account_name = "storagechiroli"
+    container_name       = "tfstates"
+    key                  = "terraform.tfstate"
+  }
+}
+
 provider "azurerm" {
   features {}
-
   subscription_id = "1a3c8328-9db3-4010-97ad-456ad8700162"
 }
 
@@ -41,11 +55,10 @@ output "client_certificate" {
   sensitive = true
 }
 
-
-
 output "kube_config" {
   value = azurerm_kubernetes_cluster.example.kube_config_raw
 
   sensitive = true
 }
+
 ```
