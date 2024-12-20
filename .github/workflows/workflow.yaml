@@ -1,0 +1,87 @@
+name: Create Azure K8S
+
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  RUN_TERRAFORM_DESTROY: false
+
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      destroyInfra:
+        description: 'Destroy Infrastructure?'
+        required: false
+        default: 'false'
+
+jobs:
+  Terraform_Plan:
+    name: TerraformPlanValidate
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: latest
+
+    - name: Login via Az module
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true 
+
+    - name: Terraform Init
+      run: |
+        terraform -chdir=terraform/ init
+
+    - name: Terraform Validate
+      run: terraform -chdir=terraform/ validate -no-color
+
+    - name: Terraform Plan
+      run: terraform -chdir=terraform/ plan -no-color -input=false
+      continue-on-error: true
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+  Deploy_Terraform:
+      name: 'Terraform Apply'
+      needs: [Terraform_Plan]
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Terraform Init
+        run: |
+          terraform -chdir=terraform/ init
+
+      - name: Terraform Apply
+        run: |
+          terraform -chdir=terraform/ apply -auto-approve -input=false
+      
+  Destroy_Terraform:
+    name: 'Conditional Terraform Destroy'
+    needs: [Deploy_Terraform]
+    runs-on: ubuntu-latest
+    if: github.event.inputs.destroyInfra == 'true'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Terraform Init
+      run: |
+        terraform -chdir=terraform/ init
+
+    - name: Terraform Destroy
+      run: |
+        terraform -chdir=terraform/ destroy -auto-approve -input=false
