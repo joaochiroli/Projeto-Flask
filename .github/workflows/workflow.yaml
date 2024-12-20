@@ -70,6 +70,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: latest
+      
       - name: Terraform Init
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
