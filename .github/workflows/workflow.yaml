@@ -7,8 +7,6 @@ env:
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   RUN_TERRAFORM_DESTROY: false
 
-
-
 on:
   workflow_dispatch:
     inputs:
