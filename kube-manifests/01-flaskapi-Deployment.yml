@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp1
+  template: 
+    metadata:
+      name: flask-api
+      labels:
+        app: myapp1   
+    spec:
+      containers:
+        - name: flask-api
+          image: mdcrepositorychiroli.azurecr.io/flask-api-db:latest
+          env:
+            - name: DB_HOST
+              value: mysql
+          ports:
+            - containerPort: 5000
