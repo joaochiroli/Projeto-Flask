@@ -143,4 +143,4 @@ jobs:
       run: az aks get-credentials --resource-group projeto-flask --name k8scluster --overwrite-existing
 
     - name: '🛳 Deploy to AKS'
-      run: kubectl apply -f kube-manifest/
+      run: kubectl apply -f kube-manifests/
