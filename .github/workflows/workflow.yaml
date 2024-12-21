@@ -139,8 +139,23 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: 🔑 'Docker Login'
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
     - name: '🔑 Get AKS Credentials'
       run: az aks get-credentials --resource-group projeto-flask --name k8scluster --overwrite-existing
+
+    - name: '🔐 Create Kubernetes Secret for ACR'
+      run: |
+        kubectl create secret docker-registry acr-secret \
+          --docker-server=${{ secrets.REGISTRY_LOGIN_SERVER }} \
+          --docker-username=${{ secrets.REGISTRY_USERNAME }} \
+          --docker-password=${{ secrets.REGISTRY_PASSWORD }} \
+          --docker-email=example@example.com || echo "Secret already exists"
 
     - name: '🛳 Deploy to AKS'
       run: kubectl apply -f kube-manifests/
