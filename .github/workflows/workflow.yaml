@@ -128,7 +128,7 @@ jobs:
   deploy_on_Aks:
     name: '🚀 Deploy App on AKS'
     runs-on: ubuntu-latest
-    needs: docker_build_push_acr
+    needs: [Deploy_Terraform]
 
     steps:
     - name: '📥 Checkout code'
