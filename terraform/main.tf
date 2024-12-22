@@ -23,6 +23,11 @@ data "azurerm_resource_group" "example" {
   name     = "projeto-flask"
 }
 
+data "azurerm_container_registry" "acr" {
+  name                = "mdcrepositorychiroli" # Substitua pelo nome do seu ACR
+  resource_group_name = data.azurerm_resource_group.example.name
+}
+
 resource "azurerm_kubernetes_cluster" "example" {
   name                = "k8scluster"
   location            = data.azurerm_resource_group.example.location
@@ -47,13 +52,9 @@ resource "azurerm_kubernetes_cluster" "example" {
   }
 }
 
-output "client_certificate" {
-  value     = azurerm_kubernetes_cluster.example.kube_config[0].client_certificate
-  sensitive = true
-}
-
-output "kube_config" {
-  value = azurerm_kubernetes_cluster.example.kube_config_raw
-
-  sensitive = true
+# Criação da role assignment para o ACR
+resource "azurerm_role_assignment" "acr_access" {
+  principal_id         = azurerm_kubernetes_cluster.example.identity[0].principal_id
+  role_definition_name = "AcrPull"
+  scope                = data.azurerm_container_registry.acr.id
 }
