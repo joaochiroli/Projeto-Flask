@@ -157,5 +157,11 @@ jobs:
           --docker-password=${{ secrets.REGISTRY_PASSWORD }} \
           --docker-email=example@example.com || echo "Secret already exists"
 
+    - name: '📂 Validate Kubernetes Manifests'
+      run: kubectl kustomize kube-manifests/
+
     - name: '🛳 Deploy to AKS'
       run: kubectl apply -f kube-manifests/
+
+    - name: '📄 Check Pods Status'
+      run: kubectl get pods --all-namespaces
