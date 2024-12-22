@@ -26,6 +26,7 @@ data "azurerm_resource_group" "example" {
 data "azurerm_container_registry" "acr" {
   name                = "mdcrepositorychiroli" # Substitua pelo nome do seu ACR
   resource_group_name = data.azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
 }
 
 resource "azurerm_kubernetes_cluster" "example" {
@@ -57,4 +58,5 @@ resource "azurerm_role_assignment" "acr_access" {
   principal_id         = azurerm_kubernetes_cluster.example.identity[0].principal_id
   role_definition_name = "AcrPull"
   scope                = data.azurerm_container_registry.acr.id
+  skip_service_principal_aad_check = true
 }
