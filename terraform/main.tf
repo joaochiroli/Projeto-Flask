@@ -26,7 +26,6 @@ data "azurerm_resource_group" "example" {
 data "azurerm_container_registry" "acr" {
   name                = "mdcrepositorychiroli" # Substitua pelo nome do seu ACR
   resource_group_name = data.azurerm_resource_group.example.name
-  location            = data.azurerm_resource_group.example.location
 }
 
 resource "azurerm_kubernetes_cluster" "example" {
