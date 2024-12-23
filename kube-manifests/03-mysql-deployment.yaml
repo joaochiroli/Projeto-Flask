@@ -24,9 +24,7 @@ spec:
               value: test_db
           ports:
             - containerPort: 3306
-              name: mysql
-          imagePullSecrets:
-          - name: acr-secret    
+              name: mysql  
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql                                               

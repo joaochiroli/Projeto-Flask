@@ -125,6 +125,26 @@ jobs:
       run: |
         terraform -chdir=terraform/ destroy -auto-approve -input=false
 
+  Attach_Acr_Aks:
+    name: '🚀 Attach Acr no Aks'
+    runs-on: ubuntu-latest
+    needs: [Deploy_Terraform]
+
+    steps:
+    - name: '📥 Checkout code'
+      uses: actions/checkout@v3
+
+    - name: '🔐 Azure Login'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Assign AcrPull Role
+      run: |
+        ACR_ID=$(az acr show --name mdcrepositorychiroli --query "id" -o tsv)
+        AKS_ID=$(az aks show --resource-group projeto-flask --name k8scluster --query "identityProfile.kubeletidentity.objectId" -o tsv)
+        az role assignment create --assignee $AKS_ID --role AcrPull --scope $ACR_ID
+
   # deploy_on_Aks:
   #   name: '🚀 Deploy App on AKS'
   #   runs-on: ubuntu-latest

@@ -20,6 +20,4 @@ spec:
             - name: DB_HOST
               value: mysql
           ports:
-            - containerPort: 5000
-          imagePullSecrets:
-          - name: acr-secret
+            - containerPort: 5000        
