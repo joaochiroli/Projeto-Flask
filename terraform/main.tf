@@ -53,7 +53,7 @@ resource "azurerm_kubernetes_cluster" "example" {
 }
 
 # Criação da role assignment para o ACR
-resource "azurerm_role_assignment" "acr_access" {
+resource "azurerm_role_assignment" "acr_pull" {
   principal_id         = azurerm_kubernetes_cluster.example.identity[0].principal_id
   role_definition_name = "AcrPull"
   scope                = data.azurerm_container_registry.acr.id
