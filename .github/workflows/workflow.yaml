@@ -181,3 +181,6 @@ jobs:
 
     - name: '📄 Check Pods Status'
       run: kubectl get pods --all-namespaces
+
+    - name: '📄 Check Services'
+      run: kubectl get svc --all-namespaces
