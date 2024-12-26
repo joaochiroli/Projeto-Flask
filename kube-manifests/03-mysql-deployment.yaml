@@ -32,3 +32,5 @@ spec:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: azure-managed-disk-pvc
+      imagePullSecrets:
+        - name: acr-secret
