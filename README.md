@@ -2,7 +2,9 @@
 
 ## Goal
 
-This is a personal project that I want to start as a small initiative and improve throughout the year.
+This is a personal project that I want to start as a small initiative and improve throughout the year. I will explain step by step what I did to start and create this project.
+
+The idea is to access the endpoint, save it in a database, and show the IPs that accessed the endpoint.
 
 ## Tools
 
@@ -39,7 +41,150 @@ AZURE_CREDENTIALS: Paste the entire JSON output in this field.
 7. Create container registry: `mdcrepositorychiroli`
 
 
-## Step 2: Create Mysql 
+## Step 2: Create Application Python and Integration with Mysql  
+
+1. Create Dockerfile to Mysql
+```
+FROM mysql:latest
+
+# Copiar o arquivo init.sql para o diretório de inicialização do MySQL
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Configuração do ambiente 
+ENV MYSQL_ROOT_PASSWORD=Mindthegap@0823*
+ENV MYSQL_DATABASE=test_db
+
+# Expor a porta 3306
+EXPOSE 3306
+
+# Comando padrão do MySQL
+CMD ["mysqld"]
+```
+2. Create `init.sql`
+
+```
+USE test_db;
+
+CREATE TABLE ip_addresses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+3. Create Python script `app.py`
+
+```
+from flask import Flask, jsonify, make_response, request
+import mysql.connector
+import os
+
+app = Flask(__name__)
+
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        user="root",
+        password="Mindthegap@0823*",
+        auth_plugin='mysql_native_password',
+        database="test_db"
+    )
+    return connection
+
+@app.route('/')
+def home():
+    client_ip = request.remote_addr
+    try:
+        # Conectar ao banco de dados
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Inserir o IP na tabela 'ip_addresses'
+        cursor.execute("INSERT INTO ip_addresses (ip_address) VALUES (%s)", (client_ip,))
+
+        # Salvar as alterações no banco
+        conn.commit()
+
+        # Fechar a conexão
+        cursor.close()
+        conn.close()
+
+        status = make_response("<h1>Bem-vindo à API Flask Status 200!</h1>", 200)
+        return status
+    except mysql.connector.Error as err:
+        app.logger.error(f"Erro ao salvar no banco de dados: {err}")
+        return jsonify({"error": f"Erro ao salvar no banco de dados: {err}"}), 500
+
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({"message": "pong"})
+
+@app.route('/ip', methods=['GET'])
+def get_ip():
+    try:
+        # Conectar ao banco de dados
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Selecionar os IPs da tabela 'ip_addresses'
+        cursor.execute("SELECT * FROM ip_addresses;")
+
+        # Obter os resultados
+        ips = cursor.fetchall()
+
+        # Fechar a conexão
+        cursor.close()
+        conn.close()
+
+        return jsonify({"ips": ips})
+    except mysql.connector.Error as err:
+        app.logger.error(f"Erro ao conectar no banco de dados: {err}")
+        return jsonify({"error": f"Erro ao conectar no banco de dados: {err}"}), 500
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+4. Create requirements.txt
+```
+Flask
+jsonify
+make_response
+requests
+mysql-connector-python
+#mysql.connector
+```
+
+5. Create Python DockerFile 
+```
+FROM python:3.9-alpine
+RUN apk update && apk add --no-cache \
+    mysql-client \
+    build-base \
+    libffi-dev \
+    musl-dev \
+    gcc \
+    python3-dev \
+    mariadb-connector-c-dev
+RUN python -m pip install --upgrade pip
+WORKDIR /app
+COPY . .
+RUN pip3 install -r requirements.txt
+CMD ["python", "app.py"]
+```
+
+6. After this step, you can use a Docker Compose file to perform a test.
+
+7. Up the Python image to Docker Hub
+```
+docker tag flask-api-db:latest joaochiroli123/flask-api-db:latest
+```
+
+8. Up the Mysql image to Docker Hub
+```
+docker tag flask-api-db:latest joaochiroli123/mysql-flaskapi
+```
+
+## Step 3:
 
 
 ## Step 2: Setup the GitHub Repository
