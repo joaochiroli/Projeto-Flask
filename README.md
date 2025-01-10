@@ -203,6 +203,7 @@ az acr import --name mdcrepositorychiroli --source docker.io/joaochiroli123/mysq
 ## Step 4: Create and test the Terraform configuration
 
 1. Create my main.tf: `touch main.tf`
+2. Don't forget to change it to your subscription ID: `<put_your_subscription_id>` 
 ```
 terraform {
   required_providers {
@@ -222,7 +223,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "1a3c8328-9db3-4010-97ad-456ad8700162"
+  subscription_id = "<put_your_subscription_id>"
 }
 
 data "azurerm_resource_group" "example" {
