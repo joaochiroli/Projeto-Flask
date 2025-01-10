@@ -184,7 +184,21 @@ docker tag flask-api-db:latest joaochiroli123/flask-api-db:latest
 docker tag flask-api-db:latest joaochiroli123/mysql-flaskapi
 ```
 
-## Step 3:
+## Step 3: Pushing the image from Dockerhub to the registry in Azure
+
+1. Access your Azure Cloud Shell
+2. Access the registry 
+```
+az acr login --name mdcrepositorychiroli
+```
+3. Push the **Python** image to registry
+```
+az acr import --name mdcrepositorychiroli --source docker.io/joaochiroli123/flask-api-db:latest --image flask-api-db:latest
+```
+4. Push the **Mysql** image to registry
+```
+az acr import --name mdcrepositorychiroli --source docker.io/joaochiroli123/mysql-flaskapi:latest --image mysql-copyinitsql:v1
+```
 
 
 ## Step 2: Setup the GitHub Repository
