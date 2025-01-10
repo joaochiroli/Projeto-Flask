@@ -4,7 +4,9 @@
 
 This is a personal project that I want to start as a small initiative and improve throughout the year. I will explain step by step what I did to start and create this project.
 
-The idea is to access the endpoint, save it in a database, and show the IPs that accessed the endpoint.
+The initial idea is to access the endpoint, save the data in a database, and display the IPs that accessed the endpoint.
+
+Througout the year I will implement new functions, improve the script, make changes, and so on. This is the skeleton of the project and my first step. 
 
 ## Tools
 
