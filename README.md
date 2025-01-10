@@ -200,7 +200,7 @@ az acr import --name mdcrepositorychiroli --source docker.io/joaochiroli123/flas
 az acr import --name mdcrepositorychiroli --source docker.io/joaochiroli123/mysql-flaskapi:latest --image mysql-copyinitsql:v1
 ```
 
-## Step 4: Create and test my terraform configuration
+## Step 4: Create and test the Terraform configuration
 
 1. Create my main.tf: `touch main.tf`
 ```
@@ -277,7 +277,7 @@ resource "azurerm_kubernetes_cluster" "example" {
 2. Navigate into the repository: `cd Projeto-Flask`
 3. Create the directory for GitHub Actions: `mkdir -p .github/workflows`
 
-## Step 6: Create the actions and apply the manifests 
+## Step 6: Create the Workflow with Terraform configuration and Apply the Manifests 
 
 1. Create the workflow: `touch .github/workflows/workflow.yaml` the information about the workflow.yml can be found in the file inside this repository.
 2. One key point is about secrets in my kube-manifests. I need to create a secret with the registry credentials so my Kubernetes cluster can access the images in my registry and perform the pull. 
@@ -290,14 +290,14 @@ resource "azurerm_kubernetes_cluster" "example" {
 
 ## Step 7: Acces the Application 
 
-1. You can found the ip going to this method in Azure  
+1. You can found the ip going to this page in Azure  
 
 ![alt text](Screenshot_2392.png)
 
-2. Access first page
+2. Access first page with the home
 
 ![alt text](Screenshot_2393.png)
 
-3. Access second page 
+3. Access second page with the Ips
 
 ![alt text](Screenshot_2394.png)
