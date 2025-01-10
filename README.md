@@ -200,23 +200,15 @@ az acr import --name mdcrepositorychiroli --source docker.io/joaochiroli123/flas
 az acr import --name mdcrepositorychiroli --source docker.io/joaochiroli123/mysql-flaskapi:latest --image mysql-copyinitsql:v1
 ```
 
+## Step 4: Create and test my terraform configuration
 
-## Step 2: Setup the GitHub Repository
-
-1. Clone the repository locally: `git clone https://github.com/joaochiroli/Projeto-Flask.git`
-2. Navigate into the repository: `cd Projeto-Flask`
-3. Create the directory for GitHub Actions: `mkdir -p .github/workflows`
-
-## Step 2: Setup the GitHub Repository
-
-## Step 3: Create the Workflow
-
+1. Create my main.tf: `touch main.tf`
 ```
 terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.14" 
+      version = "~> 4.14" # Certifique-se de ajustar a versão conforme necessário
     }
   }
 
@@ -236,6 +228,11 @@ provider "azurerm" {
 data "azurerm_resource_group" "example" {
   name     = "projeto-flask"
 }
+
+# data "azurerm_container_registry" "acr" {
+#   name                = "mdcrepositorychiroli" # Substitua pelo nome do seu ACR
+#   resource_group_name = data.azurerm_resource_group.example.name
+# }
 
 resource "azurerm_kubernetes_cluster" "example" {
   name                = "k8scluster"
@@ -260,4 +257,47 @@ resource "azurerm_kubernetes_cluster" "example" {
     Environment = "Production"
   }
 }
+
+# Criação da role assignment para o ACR
+# resource "azurerm_role_assignment" "acr_pull" {
+#   principal_id         = azurerm_kubernetes_cluster.example.identity[0].principal_id
+#   role_definition_name = "AcrPull"
+#   scope                = data.azurerm_container_registry.acr.id
+#   skip_service_principal_aad_check = true
+# }
 ```
+2. Initialize the Terraform: `terraform init`
+3. Execute: `terraform apply`
+4. Apply: `terraform apply`
+
+
+## Step 5: Setup the GitHub Repository
+
+1. Clone the repository locally: `git clone https://github.com/joaochiroli/Projeto-Flask.git`
+2. Navigate into the repository: `cd Projeto-Flask`
+3. Create the directory for GitHub Actions: `mkdir -p .github/workflows`
+
+## Step 6: Create the actions and apply the manifests 
+
+1. Create the workflow: `touch .github/workflows/workflow.yaml` the information about the workflow.yml can be found in the file inside this repository.
+2. One key point is about secrets in my kube-manifests. I need to create a secret with the registry credentials so my Kubernetes cluster can access the images in my registry and perform the pull. 
+3. About my manifests is simple contain:
+    - 2 Deployments for my services: mysql and python
+    - 1 Volume 
+    - 1 Storage-class
+    - 1 Load Balancer 
+    - 1 Service for Mysql
+
+## Step 7: Acces the Application 
+
+1. You can found the ip going to this method in Azure  
+
+![alt text](Screenshot_2392.png)
+
+2. Access first page
+
+![alt text](Screenshot_2393.png)
+
+3. Access second page 
+
+![alt text](Screenshot_2394.png)
