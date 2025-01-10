@@ -292,12 +292,12 @@ resource "azurerm_kubernetes_cluster" "example" {
 
 1. You can found the ip going to this page in Azure  
 
-![alt text](Screenshot_2392.png)
+![alt text](images/Screenshot_2392.png)
 
 2. Access first page with the home
 
-![alt text](Screenshot_2393.png)
+![alt text](images/Screenshot_2393.png)
 
 3. Access second page with the Ips
 
-![alt text](Screenshot_2394.png)
+![alt text](images/Screenshot_2394.png)
