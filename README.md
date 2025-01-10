@@ -184,7 +184,7 @@ docker tag flask-api-db:latest joaochiroli123/flask-api-db:latest
 docker tag flask-api-db:latest joaochiroli123/mysql-flaskapi
 ```
 
-## Step 3: Pushing the image from Dockerhub to the registry in Azure
+## Step 3: Pushing the image from Dockerhub to the Container Registry in Azure
 
 1. Access your Azure Cloud Shell
 2. Access the registry 
